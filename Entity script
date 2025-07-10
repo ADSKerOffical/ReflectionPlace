@@ -1,0 +1,98 @@
+local character, sho = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait(), 140
+  -- LocalScript
+while not game.Players.LocalPlayer:FindFirstChild("ItTheEnd") do
+ task.wait(20)
+ if game.Players.LocalPlayer:GetAttribute("Sanity") > 50 then
+   return 
+ end
+ if game.Players.LocalPlayer:FindFirstChild("ItTheEnd") then
+   break
+ end
+  task.spawn(function()
+    character.Archivable = true
+    local it = character:Clone()
+    game.Debris:AddItem(it, 20)
+    
+    for _, instance in next, it:GetDescendants() do
+      instance.Archivable = true
+      if instance:IsA("BodyMover") or instance:IsA("Tool") or instance:IsA("Constraint") then
+          instance:Destroy()
+       elseif instance:IsA("Accessory") and instance:FindFirstChild("Handle") and instance.Handle:FindFirstChild("FaceFrontAttachment") then
+          instance:Destroy()
+      end
+    end
+    
+    task.spawn(function()
+      repeat wait() until game.Players.LocalPlayer:GetAttribute("Sanity") > 50
+      it:Destroy()
+    end)
+    
+    it:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(Vector3.new(100 * math.cos(math.rad(math.random(0, 360))), character.HumanoidRootPart.CFrame.Y, 100 * math.sin(math.rad(math.random(0, 360)))))
+    it.HumanoidRootPart.CFrame = CFrame.lookAt(it.HumanoidRootPart.Position, Vector3.new(character.HumanoidRootPart.Position.X, it.HumanoidRootPart.Position.Y, character.HumanoidRootPart.Position.Z))
+    it:WaitForChild("Humanoid").DisplayName = ""
+    it.Humanoid.WalkSpeed = 120
+    it.Humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+    it.Parent = game:GetService("Workspace")
+  
+    if it:WaitForChild("Head"):FindFirstChild("face") or it.Head:FindFirstChildOfClass("Decal") then
+      local face = it.Head:FindFirstChild("face") or it.Head:FindFirstChildOfClass("Decal")
+      face.Texture = "https://www.roblox.com/asset-thumbnail/image?assetId=12466328200&width=432&height=432&format=png"
+    end
+    
+    local sound = Instance.new("Sound", it.HumanoidRootPart)
+    sound.SoundId = "rbxassetid://372770465"
+    sound.Volume = 1
+    sound.PlaybackSpeed = 1
+    sound:Play()
+    
+    task.spawn(function()
+      repeat task.wait()
+        it.HumanoidRootPart.CFrame = CFrame.lookAt(it.HumanoidRootPart.Position, Vector3.new(character:WaitForChild("HumanoidRootPart").Position.X, it.HumanoidRootPart.Position.Y, character:WaitForChild("HumanoidRootPart").Position.Z))
+      until game.Players.LocalPlayer:FindFirstChild("ItTheEnd") or not it
+    end)
+    
+    task.spawn(function()
+      repeat task.wait()
+        if (character:WaitForChild("HumanoidRootPart").Position - it.HumanoidRootPart.Position).Magnitude <= 27.5 then
+          it.Humanoid:MoveTo(character:WaitForChild("HumanoidRootPart").Position)
+        end
+      until game.Players.LocalPlayer:FindFirstChild("ItTheEnd") or not it
+    end)
+    
+    for _, part in next, it:GetDescendants() do
+      if part:IsA("BasePart") then
+        part.Touched:Connect(function(hit)
+          if hit:IsDescendantOf(character) and not game.Players.LocalPlayer:FindFirstChild("ItTheEnd") then
+            local theend = Instance.new("StringValue", game.Players.LocalPlayer)
+            theend.Name = "ItTheEnd"
+            
+             game:GetService("Lighting").ExposureCompensation = -2
+             it:Destroy()
+             
+             local sound = Instance.new("Sound", game.Workspace)
+             sound.SoundId = "rbxassetid://297569488"
+             sound.Volume = 1.5
+             sound.TimePosition = 0.25
+             sound.PlaybackSpeed = 0.925
+             sound:Play()
+             game:GetService("Debris"):AddItem(sound, 15)
+             
+             local Pitch = Instance.new("PitchShiftSoundEffect", sound)
+             Pitch.Octave = 0.875
+             Pitch.Priority = 1.5
+             
+             local tween = game:GetService("TweenService"):Create(game.Lighting, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), {
+                  ExposureCompensation = 0
+                })
+             tween:Play()
+          end
+        end)
+      end
+    end
+    
+    task.wait(19)
+    if not game.Players.LocalPlayer:FindFirstChild("ItTheEnd") then
+      it:Destroy()
+    end
+  end)
+end
