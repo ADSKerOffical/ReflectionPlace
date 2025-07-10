@@ -1,0 +1,168 @@
+local box = Instance.new("Part", game.Workspace)
+box.Name = "BoxWithPills"
+box.Material = Enum.Material.DiamondPlate
+box.Color = Color3.new(.3, .3, .3)
+box.Size = Vector3.new(3.5, 3.5, 3.5)
+box.Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position or Vector3.new(0, 0, 0)
+
+for _, side in next, Enum.NormalId:GetEnumItems() do
+  local decal = Instance.new("Decal", box)
+  decal.Texture = "https://www.roblox.com/asset-thumbnail/image?assetId=123047099&width=432&height=432&format=png"
+  decal.Face = side
+end
+
+local GetFloorPart = function(part: BasePart, IgnoreDescendantsObject: Instance): BasePart -- Universal Using
+  return game:GetService("Workspace"):FindPartOnRay(Ray.new(part.Position, Vector3.new(0, -part.Size.Y - 4.5, 0)), IgnoreDescendantsObject)
+end
+
+task.spawn(function()
+  repeat task.wait()
+    if box.Velocity.Magnitude >= 80 or box.Velocity.Y >= 35 then
+      repeat task.wait() until box:IsGrounded() or box.Velocity.Magnitude <= 1 or game.Workspace:Raycast(box.Position, Vector3.new(0, -(box.Size.Y + 2), 0))
+      local sound = Instance.new("Sound", box)
+      sound.SoundId = "rbxassetid://8589723532"
+      sound.Volume = 1
+      sound:Play()
+      game.Debris:AddItem(sound, 6)
+      
+      local flor = GetFloorPart(box)
+      if flor then
+        for _ = 1, 3 do
+          local parte = Instance.new("Part", game.Workspace)
+          parte.Color = flor.Color
+          parte.Material = flor.Material
+          parte.Position = box.Position + Vector3.new(15 * math.cos(math.rad(math.random(0, 360))), 0, 15 * math.sin(math.rad(math.random(0, 360))))
+          parte.Velocity = (box.Position - parte.Position).Unit * -100
+          parte.Size = Vector3.new(1, 1, 1)
+          game.Debris:AddItem(parte, 10)
+          
+          task.delay(9, function()
+            local tween = game:GetService("TweenService"):Create(parte, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), {
+        Transparency = 1
+})
+tween:Play()
+          end)
+        end
+      end
+    end
+  until not box
+end)
+
+local prompt = Instance.new("ProximityPrompt", box)
+prompt.ActionText = "Распаковать"
+prompt.ObjectText = "Коробка с содержимым"
+prompt.HoldDuration = 1
+
+prompt.Triggered:Connect(function(player)
+  local getpils = function(plr: Player)
+    local count = 0
+    for _, inst in next, plr.Backpack:GetChildren() do
+      if inst:IsA("Tool") and inst.Name == "Pills" then
+        count = count + 1
+      end
+    end
+    
+    for _, inst in next, plr.Character:GetChildren() do
+      if inst:IsA("Tool") and inst.Name == "Pills" then
+        count = count + 1
+      end
+    end
+    return count
+  end
+  if player and getpils(player) < 3 then
+    local player = player or game.Players.LocalPlayer
+local pills = Instance.new("Tool", player.Backpack)
+pills.Name = "Pills"
+pills.Grip = CFrame.new(0, -0.5, 0)
+pills.TextureId = "https://www.roblox.com/asset-thumbnail/image?assetId=81340022286567&width=432&height=432&format=png"
+pills.ToolTip = "Блистер который вы нашли на кузове\nПолучите таблетки из этого блистера (осталось 15)"
+
+local Uses = Instance.new("IntValue", pills)
+Uses.Name = "Usings"
+Uses.Value = 0
+
+Uses:GetPropertyChangedSignal("Value"):Connect(function()
+  pills.ToolTip = `Блистер который вы нашли на кузове\nПолучите таблетки из этого блистера (осталось {15 - Uses.Value})`
+  if Uses.Value >= 15 then
+    pills:Destroy()
+  end
+end)
+
+local handle = Instance.new("Part", pills)
+handle.Name = "Handle"
+handle.Material = "SmoothPlastic"
+handle.Size = Vector3.new(1, 1.75, 0.15)
+handle.Color = Color3.new(1, 1, 1)
+handle.CanCollide = true
+
+handle.Touched:Connect(function(hit)
+  if game.Players:GetPlayerFromCharacter(hit.Parent) and not game.Players:GetPlayerFromCharacter(pills.Parent) then
+    pills.Parent = game.Players:GetPlayerFromCharacter(hit.Parent).Backpack
+  end
+end)
+
+local Tablets = handle:Clone()
+Tablets.CanCollide = false
+Tablets.Massless = true
+Tablets.Size = Vector3.new(1, 1, 1)
+Tablets.Parent = handle
+
+local Tablets_Mesh = Instance.new("SpecialMesh", Tablets)
+Tablets_Mesh.MeshId = "rbxassetid://13295321448"
+Tablets_Mesh.Scale = Vector3.new(.03, .03, .03)
+
+local Tablets_Joint = Instance.new("Weld", Tablets)
+Tablets_Joint.Part0 = Tablets
+Tablets_Joint.Part1 = handle
+Tablets_Joint.C0 = CFrame.new(0, -0.1, 0) * CFrame.Angles(math.rad(90), 0, 0)
+
+local lastPressTime = 0
+pills.Activated:Connect(function()
+local currentTime = tick()
+   if currentTime - lastPressTime >= 15 then
+      lastPressTime = currentTime
+     Uses.Value += 1
+     
+     local sound = Instance.new("Sound", handle)
+     sound.SoundId = "rbxassetid://9114868723"
+     sound.Volume = 1
+     sound.PlaybackSpeed = 1
+     sound.TimePosition = 24
+     sound:Play()
+     game.Debris:AddItem(sound, 6)
+     
+     local pill = Instance.new("Tool", game.Players:GetPlayerFromCharacter(pills.Parent).Backpack)
+     pill.Name = "Pill"
+     pill.CanBeDropped = false
+     pill.TextureId = "https://www.roblox.com/asset-thumbnail/image?assetId=127113115988494&width=432&height=432&format=png"
+     pill.ToolTip = "Восстановите ваш рассудок с помощью этой таблетки\nНе ешьте их слишком много"
+     
+     local handle = Instance.new("Part", pill)
+     handle.Color = Color3.new(1, 1, 1)
+     handle.Name = "Handle"
+     
+     local pill_mesh = Instance.new("SpecialMesh", handle)
+     pill_mesh.MeshId = "rbxassetid://6914995538"
+     pill_mesh.Scale = Vector3.new(.15, .15, .05)
+     
+     pill.Activated:Connect(function()
+     local owner = game.Players:GetPlayerFromCharacter(pill.Parent)
+       owner:SetAttribute("Sanity", owner:GetAttribute("Sanity") + 20)
+         if owner:GetAttribute("Sanity") < 100 then
+           pill:Destroy()
+           
+           local sound = Instance.new("Sound", owner.Character.Head)
+           sound.SoundId = "rbxassetid://289824359"
+           sound.Volume = 1
+           sound:Play()
+           game.Debris:AddItem(sound, 5)
+         end
+         if owner:GetAttribute("Sanity") > 100 then
+           owner:SetAttribute("Sanity", 100)
+           pill:Destroy()
+         end
+     end)
+   end
+end)
+  end
+end)
