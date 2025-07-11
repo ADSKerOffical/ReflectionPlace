@@ -1,0 +1,78 @@
+local effect = Instance.new("Sky")
+effect.CelestialBodiesShown = true
+effect.MoonTextureId = "rbxassetid://6444320592"
+effect.Parent = game.Lighting
+effect.SkyboxBk = "rbxassetid://6444884337"
+effect.SkyboxDn = "rbxassetid://6444884785"
+effect.SkyboxFt = "rbxassetid://6444884337"
+effect.SkyboxLf = "rbxassetid://6444884337"
+effect.SkyboxRt = "rbxassetid://6444884337"
+effect.SkyboxUp = "rbxassetid://6412503613"
+effect.StarCount = 0
+effect.SunTextureId = "rbxassetid://6196665106"
+
+local effect = Instance.new("Atmosphere")
+effect.Color = Color3.new(0.1, 0.1, 0.1)
+effect.Decay = Color3.new(0.3, 0.3, 0.3)
+effect.Density = 0.6
+effect.Haze = 5
+effect.Name = "DarkFog"
+effect.Offset = 1
+effect.Parent = game.Lighting
+
+local effect = Instance.new("BloomEffect")
+effect.Intensity = 1
+effect.Name = "Bloom"
+effect.Parent = game.Lighting
+effect.Size = 24
+effect.Threshold = 2
+
+local effect = Instance.new("Sky")
+effect.CelestialBodiesShown = false
+effect.Name = "Night Time Sky"
+effect.Parent = game.Lighting
+effect.Sandboxed = false
+effect.SkyboxBk = "http://www.roblox.com/asset/?version=1&id=1014344"
+effect.SkyboxDn = "http://www.roblox.com/asset/?version=1&id=1014344"
+effect.SkyboxFt = "http://www.roblox.com/asset/?version=1&id=1014344"
+effect.SkyboxLf = "http://www.roblox.com/asset/?version=1&id=1014344"
+effect.SkyboxRt = "http://www.roblox.com/asset/?version=1&id=1014344"
+effect.SkyboxUp = "http://www.roblox.com/asset/?version=1&id=1014344"
+effect.StarCount = 0
+
+local effect = Instance.new("SunRaysEffect")
+effect.Intensity = 0.01
+effect.Name = "SunRays"
+effect.Parent = game.Lighting
+effect.Spread = 0.1
+
+local effect = Instance.new("ColorCorrectionEffect")
+effect.Brightness = -0.1
+effect.Contrast = 0.1
+effect.Name = "DarkVignette"
+effect.Parent = game.Lighting
+effect.Saturation = -0.1
+effect.TintColor = Color3.new(0.15, 0.15, 0.15)
+
+local effect = Instance.new("DepthOfFieldEffect")
+effect.FarIntensity = 0.10000000149011612
+effect.FocusDistance = 0.05000000074505806
+effect.InFocusRadius = 30
+effect.Name = "DepthOfField"
+effect.NearIntensity = 0.75
+effect.Parent = game.Lighting
+effect.Sandboxed = false
+
+local effect = Instance.new("Atmosphere")
+effect.Color = Color3.new(0.780392, 0.780392, 0.780392)
+effect.Decay = Color3.new(0.415686, 0.439216, 0.490196)
+effect.Density = 0.30000001192092896
+effect.Glare = 0
+effect.Haze = 0
+effect.Offset = 0.25
+effect.Parent = game.Lighting
+
+local effect = Instance.new("BlurEffect")
+effect.Name = "VisionBlur"
+effect.Parent = game.Lighting
+effect.Size = 3
